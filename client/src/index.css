@@ -39,6 +39,10 @@ p {
   background: #e74c3c;
 }
 
+.btn--blue {
+  background: #0064e7;
+}
+
 .text-input {
   background: none;
   border: none;

@@ -20,7 +20,7 @@ class App extends React.Component {
     this.setState({tasks: newTasks});
   }
 
-  removeTask = (id, own = false)=> {
+  removeTask = (id, own = false) => {
     this.setState({
       tasks: this.state.tasks.filter(task => task.id !== id),
     });
@@ -33,6 +33,10 @@ class App extends React.Component {
     this.setState({
       tasks: [...this.state.tasks, task],
     });
+  }
+
+  editTask = (id, own = false) => {
+    console.log('I want to edit task!');
   }
 
   submitForm = event => {
@@ -61,7 +65,10 @@ class App extends React.Component {
             {this.state.tasks.map(({id, name}) => (
               <li key={id} className="task">
                 {name}
-                <button onClick={() =>this.removeTask(id, true)} className="btn btn--red">Remove</button>
+                <div>
+                  <button onClick={() => this.editTask(id, true)} className="btn btn--blue">Edit</button>
+                  <button onClick={() => this.removeTask(id, true)} className="btn btn--red">Remove</button>
+                </div>
               </li>
             ))}
           </ul>
