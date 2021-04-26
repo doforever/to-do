@@ -17,17 +17,17 @@ const server = app.listen(8000, () => {
 });
 
 const io = socket(server);
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   console.log('New socket ', socket.id);
   socket.emit('updateData', tasks);
   socket.on('addTask', task => {
-    console.log(`${socket.id} adds ${task}`);
+    console.log(`${socket.id} adds ${task.name}`);
     tasks.push(task);
     socket.broadcast.emit('addTask', task);
   });
-  socket.on('removeTask', i => {
-    console.log(`${socket.id} removes task ${i}`);
-    tasks.splice(i,1);
-    socket.broadcast.emit('removeTask', i);
+  socket.on('removeTask', id => {
+    console.log(`${socket.id} removes task ${id}`);
+    tasks.splice(tasks.findIndex(task => task.id === id),1);
+    socket.broadcast.emit('removeTask', id);
   });
 });
