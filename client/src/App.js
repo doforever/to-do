@@ -7,6 +7,7 @@ class App extends React.Component {
   state = {
     tasks: [],
     taskName: '',
+    editedTask: {id: '', name: ''},
   }
 
   componentDidMount() {
@@ -14,6 +15,7 @@ class App extends React.Component {
     this.socket.on('addTask', task => this.addTask(task));
     this.socket.on('removeTask', id => this.removeTask(id));
     this.socket.on('updateData', data => this.updateTasks(data));
+    this.socket.on('updateTask', task => this.updateTask(task));
   }
 
   updateTasks = newTasks => {
@@ -35,8 +37,26 @@ class App extends React.Component {
     });
   }
 
-  editTask = (id, own = false) => {
-    console.log('I want to edit task!');
+  editTask = newName => {
+    this.setState({
+      ...this.state,
+      editedTask: {
+        ...this.state.editedTask,
+        name: newName,
+      }
+    });
+  }
+
+  saveTask = () => {
+    this.updateTask(this.state.editedTask);
+    this.socket.emit('updateTask', this.state.editedTask);
+    this.setState({editedTask: {id: '', name: ''}});
+  }
+
+  updateTask = newTask => {
+    this.setState({
+      tasks: this.state.tasks.map(task => task.id === newTask.id ? newTask : task)
+    });
   }
 
   submitForm = event => {
@@ -64,10 +84,31 @@ class App extends React.Component {
           <ul className="tasks-section__list" id="tasks-list">
             {this.state.tasks.map(({id, name}) => (
               <li key={id} className="task">
-                {name}
+                <input 
+                  type="text" 
+                  className={'task__input' + (id === this.state.editedTask.id ? ' task__input--active' : '')}
+                  autoComplete="off"  
+                  value={id === this.state.editedTask.id ? this.state.editedTask.name : name}
+                  readOnly={id !== this.state.editedTask.id}
+                  onChange={event => this.editTask(event.target.value)}
+                />
                 <div>
-                  <button onClick={() => this.editTask(id, true)} className="btn btn--blue">Edit</button>
-                  <button onClick={() => this.removeTask(id, true)} className="btn btn--red">Remove</button>
+                  { id === this.state.editedTask.id 
+                    ? <button
+                      onClick={this.saveTask}
+                      className="btn btn--blue"
+                    >Save</button> 
+                    : <button
+                      onClick={() => this.setState({ editedTask: {id, name}})}
+                      className="btn btn--blue"
+                    >Edit</button>
+                  }
+                  <button 
+                    onClick={() => this.removeTask(id, true)} 
+                    className="btn btn--red"
+                  >
+                    Remove
+                  </button>
                 </div>
               </li>
             ))}

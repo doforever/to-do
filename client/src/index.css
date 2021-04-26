@@ -77,3 +77,23 @@ p {
   align-items: center;
   border-bottom: 1px dashed rgb(83, 83, 83);
 }
+
+.task__input {
+  display: flex;
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 8px 5px;
+  font-family: inherit;
+  outline: none;
+  transition: .3s;
+  flex: 1;
+  width: 100%;
+  cursor: default;
+}
+
+.task__input--active {
+  border-bottom: 2px solid #0064e7;
+  background-color: rgba(153, 153, 153, 0.1);
+  cursor: auto;
+}

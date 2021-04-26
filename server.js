@@ -30,4 +30,10 @@ io.on('connection', socket => {
     tasks.splice(tasks.findIndex(task => task.id === id),1);
     socket.broadcast.emit('removeTask', id);
   });
+  socket.on('updateTask', newTask => {
+    console.log(`${socket.id} updates task ${newTask.id}`);
+    const task = tasks.find(task => task.id === newTask.id);
+    task.name = newTask.name;
+    socket.broadcast.emit('updateTask', newTask);
+  });
 });
