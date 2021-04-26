@@ -7,11 +7,9 @@ const tasks = [];
 
 const app = express();
 app.use(cors());
-// app.use(express.static(path.join(__dirname, '/client')));
 
 app.get('*', (req, res) => {
   res.send('Not found ...');
-  // res.sendFile(path.join(__dirname, '/client/index.html'));
 });
 
 const server = app.listen(8000, () => {
@@ -20,6 +18,7 @@ const server = app.listen(8000, () => {
 
 const io = socket(server);
 io.on('connection', (socket) => {
+  console.log('New socket ', socket.id);
   socket.emit('updateData', tasks);
   socket.on('addTask', task => {
     console.log(`${socket.id} adds ${task}`);
